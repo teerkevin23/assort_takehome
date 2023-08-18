@@ -32,7 +32,7 @@ logging.basicConfig(level=logging.DEBUG)
 #     return resp
 
 
-@app.route("/names", methods=['POST'])
+@app.route("/name", methods=['POST'])
 def name():
     resp = VoiceResponse()
     resp.say("Hello. Thanks for calling Assort Health.", voice='Polly.Amy')
@@ -257,7 +257,7 @@ def set_contact():
     return str(resp)
 
 
-@app.route("/name", methods=['POST'])
+@app.route("/appointments", methods=['POST'])
 def offer_appointments():
     resp = VoiceResponse()
     gather = Gather(num_digits=1, action='/action/appointments')
