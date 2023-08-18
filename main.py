@@ -32,7 +32,7 @@ logging.basicConfig(level=logging.DEBUG)
 #     return resp
 
 
-@app.route("/name", methods=['POST'])
+@app.route("/names", methods=['POST'])
 def name():
     resp = VoiceResponse()
     resp.say("Hello. Thanks for calling Assort Health.", voice='Polly.Amy')
@@ -257,7 +257,7 @@ def set_contact():
     return str(resp)
 
 
-@app.route("/appointments", methods=['POST'])
+@app.route("/name", methods=['POST'])
 def offer_appointments():
     resp = VoiceResponse()
     gather = Gather(num_digits=1, action='/action/appointments')
@@ -266,7 +266,7 @@ def offer_appointments():
         doctor = appointment.name
         time = appointment.time
         gather.say("We have availability at " + time + " with " + doctor, voice='Polly.Amy')
-        gather.say("press {number}".format(number=index+1), voice='Polly.Amy')
+        gather.say("To book, Press {number}".format(number=index+1), voice='Polly.Amy')
 
     resp.append(gather)
 
@@ -280,35 +280,34 @@ def set_appointments():
     if 'Digits' in request.values:
         choice = request.values['Digits']
         phoneNumber = get_caller_number(request.values)
-
         if choice == '1':
             availability = ASSESSMENT.available_doctors[0]
             ASSESSMENT.doctor = availability.name
             ASSESSMENT.appointment_time = availability.time
             resp.say('You chose {doctor} at {time}'.format(doctor=availability.name, time=availability.time), voice='Polly.Amy')
-            completed_assessment(phoneNumber, ASSESSMENT)
-            return str(resp)
+
         elif choice == '2':
             availability = ASSESSMENT.available_doctors[1]
             ASSESSMENT.doctor = availability.name
             ASSESSMENT.appointment_time = availability.time
             resp.say('You chose {doctor} at {time}'.format(doctor=availability.name, time=availability.time), voice='Polly.Amy')
-            completed_assessment(phoneNumber, ASSESSMENT)
-            return str(resp)
+
         elif choice == '3':
             availability = ASSESSMENT.available_doctors[2]
             ASSESSMENT.doctor = availability.name
             ASSESSMENT.appointment_time = availability.time
             resp.say('You chose {doctor} at {time}'.format(doctor=availability.name, time=availability.time), voice='Polly.Amy')
-            completed_assessment(phoneNumber, ASSESSMENT)
-            return str(resp)
+
         else:
             # If the caller didn't choose 1, 2, or 3 apologize and assign
             resp.say("Sorry, I don't understand. We will assign an appointment for you.")
-            availability = ASSESSMENT.available_doctors[2]
+            availability = ASSESSMENT.available_doctors[0]
             ASSESSMENT.doctor = availability.name
             ASSESSMENT.time = availability.time
-            completed_assessment(phoneNumber, ASSESSMENT)
+
+        resp.say('Sending you a text reminder of your appointment now...', voice='Polly.Amy')
+        completed_assessment(phoneNumber, ASSESSMENT)
+        return str(resp)
     else:
         resp.redirect('/appointments')
 
@@ -316,10 +315,6 @@ def set_appointments():
 
 
 def completed_assessment(phoneNumber, assessment):
-    print(assessment.name, assessment.referral, assessment.demographics)
-    app.logger.info(assessment)
-    print(vars(assessment))
-    app.logger.info(vars(assessment))
     return send_sms(phoneNumber, assessment)
 
 

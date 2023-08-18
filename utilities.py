@@ -32,7 +32,7 @@ def get_caller_number(multidict):
 
 def generate_availability(assessment):
     """ FAKE GENERATION OF AVAIL DOCTORS AND TIMES """
-    d1 = DoctorAvailability('Dr. Kenny Smith', "1:00pm PST")
-    d2 = DoctorAvailability("Dr. John Doe", "2:00pm PST")
-    d3 = DoctorAvailability("Dr. Penny Halligan", "3:00pm PST")
+    d1 = DoctorAvailability('Dr. Kenny Smith', "August 21 at 1:00pm PST")
+    d2 = DoctorAvailability("Dr. John Doe", "August 22 at 2:00pm PST")
+    d3 = DoctorAvailability("Dr. Penny Halligan", "August 23 at 3:00pm PST")
     assessment.available_doctors = [d1, d2, d3]
